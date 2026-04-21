@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Calculator</title>
+<title>Calculator + Converter</title>
 
 <style>
 body {
@@ -15,21 +15,36 @@ body {
     margin: 0;
 }
 
+/* Container resizes */
 .container {
-    width: 340px;
+    transition: 0.3s;
 }
 
+/* Calculator size */
+.container.calc-mode {
+    width: 320px;
+}
+
+/* Bigger converter */
+.container.conv-mode {
+    width: 420px;
+}
+
+/* Panels */
 .panel {
     background: #222;
     padding: 20px;
     border-radius: 12px;
     display: none;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .active {
     display: block;
 }
 
+/* Display */
 #display, #convInput, #convResult {
     width: 100%;
     height: 50px;
@@ -41,6 +56,7 @@ body {
     padding: 5px;
 }
 
+/* Buttons */
 .buttons {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -55,125 +71,139 @@ button {
     cursor: pointer;
 }
 
+/* Styles */
 .operator { background: orange; color: white; }
 .equal { background: green; color: white; }
 .clear { background: red; color: white; }
 .special { background: #555; color: white; }
 
+/* Top toggle */
 .topbar {
     display: flex;
     gap: 5px;
     margin-bottom: 10px;
 }
-.topbar button { flex: 1; }
+.topbar button {
+    flex: 1;
+}
+
+/* Converter grid better layout */
+#conv .buttons {
+    grid-template-columns: repeat(3, 1fr);
+}
+#conv button {
+    font-size: 12px;
+    padding: 8px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="container calc-mode" id="container">
 
-    <div class="topbar">
-        <button onclick="showCalc()">Calculator</button>
-        <button onclick="showConv()">Convert</button>
-    </div>
+<div class="topbar">
+    <button onclick="showCalc()">Calculator</button>
+    <button onclick="showConv()">Convert</button>
+</div>
 
-    <!-- Calculator -->
-    <div id="calc" class="panel active">
-        <input type="text" id="display" readonly>
+<!-- Calculator -->
+<div id="calc" class="panel active">
+<input type="text" id="display" readonly>
 
-        <div class="buttons">
-            <button class="special" onclick="pressPi()">π</button>
-            <button class="special" onclick="squareRoot()">√</button>
-            <button class="special" onclick="square()">x²</button>
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button onclick="deleteLast()">DEL</button>
+<div class="buttons">
+<button class="special" onclick="pressPi()">π</button>
+<button class="special" onclick="squareRoot()">√</button>
+<button class="special" onclick="square()">x²</button>
+<button class="clear" onclick="clearDisplay()">C</button>
+<button onclick="deleteLast()">DEL</button>
 
-            <button onclick="press('7')">7</button>
-            <button onclick="press('8')">8</button>
-            <button onclick="press('9')">9</button>
-            <button class="operator" onclick="press('/')">/</button>
-            <button onclick="press('(')">(</button>
+<button onclick="press('7')">7</button>
+<button onclick="press('8')">8</button>
+<button onclick="press('9')">9</button>
+<button class="operator" onclick="press('/')">/</button>
+<button onclick="press('(')">(</button>
 
-            <button onclick="press('4')">4</button>
-            <button onclick="press('5')">5</button>
-            <button onclick="press('6')">6</button>
-            <button class="operator" onclick="press('*')">*</button>
-            <button onclick="press(')')">)</button>
+<button onclick="press('4')">4</button>
+<button onclick="press('5')">5</button>
+<button onclick="press('6')">6</button>
+<button class="operator" onclick="press('*')">*</button>
+<button onclick="press(')')">)</button>
 
-            <button onclick="press('1')">1</button>
-            <button onclick="press('2')">2</button>
-            <button onclick="press('3')">3</button>
-            <button class="operator" onclick="press('-')">-</button>
-            <button onclick="press('.')">.</button>
+<button onclick="press('1')">1</button>
+<button onclick="press('2')">2</button>
+<button onclick="press('3')">3</button>
+<button class="operator" onclick="press('-')">-</button>
+<button onclick="press('.')">.</button>
 
-            <button onclick="press('0')">0</button>
-            <button class="equal" onclick="calculate()">=</button>
-            <button class="operator" onclick="press('+')">+</button>
-            <button style="grid-column: span 2;" onclick="toFractionUnicode()">Frac</button>
-        </div>
-    </div>
+<button onclick="press('0')">0</button>
+<button class="equal" onclick="calculate()">=</button>
+<button class="operator" onclick="press('+')">+</button>
+<button style="grid-column: span 2;" onclick="toFractionUnicode()">Frac</button>
+</div>
+</div>
 
-    <!-- Converter -->
-    <div id="conv" class="panel">
-        <input type="number" id="convInput" placeholder="Enter value">
+<!-- Converter -->
+<div id="conv" class="panel">
+<input type="number" id="convInput" placeholder="Enter value">
 
-        <div class="buttons">
+<div class="buttons">
 
-            <!-- Length -->
-            <button onclick="convert('km-m')">km→m</button>
-            <button onclick="convert('m-km')">m→km</button>
-            <button onclick="convert('m-cm')">m→cm</button>
-            <button onclick="convert('cm-m')">cm→m</button>
-            <button onclick="convert('cm-mm')">cm→mm</button>
+<!-- Length -->
+<button onclick="convert('km-m')">km→m</button>
+<button onclick="convert('m-km')">m→km</button>
+<button onclick="convert('m-cm')">m→cm</button>
+<button onclick="convert('cm-m')">cm→m</button>
+<button onclick="convert('cm-mm')">cm→mm</button>
+<button onclick="convert('mm-cm')">mm→cm</button>
+<button onclick="convert('dm-cm')">dm→cm</button>
+<button onclick="convert('cm-dm')">cm→dm</button>
 
-            <button onclick="convert('mm-cm')">mm→cm</button>
-            <button onclick="convert('dm-cm')">dm→cm</button>
-            <button onclick="convert('cm-dm')">cm→dm</button>
+<!-- Area -->
+<button onclick="convert('m2-cm2')">m²→cm²</button>
+<button onclick="convert('cm2-m2')">cm²→m²</button>
 
-            <!-- Area -->
-            <button onclick="convert('m2-cm2')">m²→cm²</button>
-            <button onclick="convert('cm2-m2')">cm²→m²</button>
+<!-- Volume -->
+<button onclick="convert('cm3-ml')">cm³→mL</button>
+<button onclick="convert('ml-cm3')">mL→cm³</button>
+<button onclick="convert('l-ml')">L→mL</button>
+<button onclick="convert('ml-l')">mL→L</button>
+<button onclick="convert('dm3-cm3')">dm³→cm³</button>
+<button onclick="convert('cm3-dm3')">cm³→dm³</button>
 
-            <!-- Volume -->
-            <button onclick="convert('cm3-ml')">cm³→mL</button>
-            <button onclick="convert('ml-cm3')">mL→cm³</button>
-            <button onclick="convert('l-ml')">L→mL</button>
-            <button onclick="convert('ml-l')">mL→L</button>
-            <button onclick="convert('dm3-cm3')">dm³→cm³</button>
+<!-- Mass -->
+<button onclick="convert('kg-g')">kg→g</button>
+<button onclick="convert('g-kg')">g→kg</button>
 
-            <button onclick="convert('cm3-dm3')">cm³→dm³</button>
+<!-- Temperature -->
+<button onclick="convert('c-f')">°C→°F</button>
+<button onclick="convert('f-c')">°F→°C</button>
 
-            <!-- Mass -->
-            <button onclick="convert('kg-g')">kg→g</button>
-            <button onclick="convert('g-kg')">g→kg</button>
+<!-- Time -->
+<button onclick="convert('hr-min')">hr→min</button>
+<button onclick="convert('min-hr')">min→hr</button>
+<button onclick="convert('min-sec')">min→sec</button>
+<button onclick="convert('sec-min')">sec→min</button>
 
-            <!-- Temperature -->
-            <button onclick="convert('c-f')">°C→°F</button>
-            <button onclick="convert('f-c')">°F→°C</button>
+</div>
 
-            <!-- Time -->
-            <button onclick="convert('hr-min')">hr→min</button>
-            <button onclick="convert('min-hr')">min→hr</button>
-            <button onclick="convert('min-sec')">min→sec</button>
-            <button onclick="convert('sec-min')">sec→min</button>
-
-        </div>
-
-        <input type="text" id="convResult" readonly placeholder="Result">
-    </div>
+<input type="text" id="convResult" readonly placeholder="Result">
+</div>
 
 </div>
 
 <script>
-// Toggle screens
+// Toggle modes
 function showCalc() {
     document.getElementById('calc').classList.add('active');
     document.getElementById('conv').classList.remove('active');
+    document.getElementById('container').className = "container calc-mode";
 }
+
 function showConv() {
     document.getElementById('conv').classList.add('active');
     document.getElementById('calc').classList.remove('active');
+    document.getElementById('container').className = "container conv-mode";
 }
 
 // Calculator
@@ -188,10 +218,12 @@ function squareRoot(){
     try { display.value = Math.sqrt(eval(display.value)); }
     catch { display.value="Error"; }
 }
+
 function square(){
     try { let v=eval(display.value); display.value = v*v; }
     catch { display.value="Error"; }
 }
+
 function calculate(){
     try { display.value = Function('"use strict";return ('+display.value+')')(); }
     catch { display.value="Error"; }
@@ -220,11 +252,12 @@ function toFractionUnicode(){
     display.value = convertToUnicodeFraction(decimalToFraction(v));
 }
 
-// Conversions
+// Converter
 function convert(type){
     let input=parseFloat(document.getElementById('convInput').value);
     let result=document.getElementById('convResult');
-    if(isNaN(input)){result.value="Error";return;}
+
+    if(isNaN(input)){ result.value="Error"; return; }
 
     switch(type){
         case 'km-m': result.value=input*1000; break;
