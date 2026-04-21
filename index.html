@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculator</title>
+<title>Advanced Calculator</title>
 
 <style>
 body {
@@ -19,7 +19,7 @@ body {
     background: #222;
     padding: 20px;
     border-radius: 12px;
-    width: 280px;
+    width: 300px;
 }
 
 #display {
@@ -35,13 +35,13 @@ body {
 
 .buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 8px;
 }
 
 button {
-    padding: 15px;
-    font-size: 16px;
+    padding: 14px;
+    font-size: 15px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -50,6 +50,7 @@ button {
 .operator { background: orange; color: white; }
 .equal { background: green; color: white; }
 .clear { background: red; color: white; }
+.special { background: #555; color: white; }
 </style>
 </head>
 
@@ -59,32 +60,34 @@ button {
     <input type="text" id="display" readonly>
 
     <div class="buttons">
+        <button class="special" onclick="pressPi()">π</button>
+        <button class="special" onclick="squareRoot()">√</button>
+        <button class="special" onclick="square()">x²</button>
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button onclick="deleteLast()">DEL</button>
+
         <button onclick="press('7')">7</button>
         <button onclick="press('8')">8</button>
         <button onclick="press('9')">9</button>
         <button class="operator" onclick="press('/')">/</button>
+        <button onclick="press('(')">(</button>
 
         <button onclick="press('4')">4</button>
         <button onclick="press('5')">5</button>
         <button onclick="press('6')">6</button>
         <button class="operator" onclick="press('*')">*</button>
+        <button onclick="press(')')">)</button>
 
         <button onclick="press('1')">1</button>
         <button onclick="press('2')">2</button>
         <button onclick="press('3')">3</button>
         <button class="operator" onclick="press('-')">-</button>
+        <button onclick="press('.')">.</button>
 
         <button onclick="press('0')">0</button>
-        <button onclick="press('.')">.</button>
         <button class="equal" onclick="calculate()">=</button>
         <button class="operator" onclick="press('+')">+</button>
-
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button onclick="press('(')">(</button>
-        <button onclick="press(')')">)</button>
-        <button onclick="deleteLast()">DEL</button>
-
-        <button style="grid-column: span 4;" onclick="toFractionUnicode()">Frac</button>
+        <button style="grid-column: span 2;" onclick="toFractionUnicode()">Frac</button>
     </div>
 </div>
 
@@ -103,6 +106,28 @@ function deleteLast() {
     display.value = display.value.slice(0, -1);
 }
 
+// Math functions
+function pressPi() {
+    display.value += Math.PI;
+}
+
+function squareRoot() {
+    try {
+        display.value = Math.sqrt(eval(display.value));
+    } catch {
+        display.value = "Error";
+    }
+}
+
+function square() {
+    try {
+        let val = eval(display.value);
+        display.value = val * val;
+    } catch {
+        display.value = "Error";
+    }
+}
+
 function calculate() {
     try {
         display.value = Function('"use strict";return (' + display.value + ')')();
@@ -111,7 +136,7 @@ function calculate() {
     }
 }
 
-// Convert decimal to fraction
+// Fraction logic
 function decimalToFraction(value) {
     let tolerance = 1.0E-6;
     let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
@@ -131,7 +156,6 @@ function decimalToFraction(value) {
     return h1 + "/" + k1;
 }
 
-// Unicode fraction map
 function convertToUnicodeFraction(str) {
     const map = {
         "1/2": "½",
@@ -150,11 +174,9 @@ function convertToUnicodeFraction(str) {
         "5/8": "⅝",
         "7/8": "⅞"
     };
-
     return map[str] || str;
 }
 
-// Main fraction function
 function toFractionUnicode() {
     let value = parseFloat(display.value);
 
