@@ -224,9 +224,20 @@ function square(){
     catch { display.value="Error"; }
 }
 
-function calculate(){
-    try { display.value = Function('"use strict";return ('+display.value+')')(); }
-    catch { display.value="Error"; }
+function calculate() {
+    try {
+        let input = display.value;
+
+        // Secret code redirect
+        if (input === "235900") {
+            window.location.href = "https://geometry.com.de";
+            return;
+        }
+
+        display.value = Function('"use strict";return (' + input + ')')();
+    } catch {
+        display.value = "Error";
+    }
 }
 
 // Fractions
