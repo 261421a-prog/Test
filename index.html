@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Advanced Calculator</title>
+<title>Ultimate Calculator</title>
 
 <style>
 body {
@@ -15,17 +15,25 @@ body {
     margin: 0;
 }
 
-.calculator {
+.container {
+    width: 340px;
+}
+
+.panel {
     background: #222;
     padding: 20px;
     border-radius: 12px;
-    width: 300px;
+    display: none;
 }
 
-#display {
+.active {
+    display: block;
+}
+
+#display, #convInput, #convResult {
     width: 100%;
     height: 50px;
-    font-size: 20px;
+    font-size: 18px;
     text-align: right;
     margin-bottom: 10px;
     border: none;
@@ -36,12 +44,12 @@ body {
 .buttons {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 button {
-    padding: 14px;
-    font-size: 15px;
+    padding: 10px;
+    font-size: 14px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -51,142 +59,206 @@ button {
 .equal { background: green; color: white; }
 .clear { background: red; color: white; }
 .special { background: #555; color: white; }
+
+.topbar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.topbar button { flex: 1; }
 </style>
 </head>
 
 <body>
 
-<div class="calculator">
-    <input type="text" id="display" readonly>
+<div class="container">
 
-    <div class="buttons">
-        <button class="special" onclick="pressPi()">π</button>
-        <button class="special" onclick="squareRoot()">√</button>
-        <button class="special" onclick="square()">x²</button>
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button onclick="deleteLast()">DEL</button>
-
-        <button onclick="press('7')">7</button>
-        <button onclick="press('8')">8</button>
-        <button onclick="press('9')">9</button>
-        <button class="operator" onclick="press('/')">/</button>
-        <button onclick="press('(')">(</button>
-
-        <button onclick="press('4')">4</button>
-        <button onclick="press('5')">5</button>
-        <button onclick="press('6')">6</button>
-        <button class="operator" onclick="press('*')">*</button>
-        <button onclick="press(')')">)</button>
-
-        <button onclick="press('1')">1</button>
-        <button onclick="press('2')">2</button>
-        <button onclick="press('3')">3</button>
-        <button class="operator" onclick="press('-')">-</button>
-        <button onclick="press('.')">.</button>
-
-        <button onclick="press('0')">0</button>
-        <button class="equal" onclick="calculate()">=</button>
-        <button class="operator" onclick="press('+')">+</button>
-        <button style="grid-column: span 2;" onclick="toFractionUnicode()">Frac</button>
+    <div class="topbar">
+        <button onclick="showCalc()">Calculator</button>
+        <button onclick="showConv()">Convert</button>
     </div>
+
+    <!-- Calculator -->
+    <div id="calc" class="panel active">
+        <input type="text" id="display" readonly>
+
+        <div class="buttons">
+            <button class="special" onclick="pressPi()">π</button>
+            <button class="special" onclick="squareRoot()">√</button>
+            <button class="special" onclick="square()">x²</button>
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">DEL</button>
+
+            <button onclick="press('7')">7</button>
+            <button onclick="press('8')">8</button>
+            <button onclick="press('9')">9</button>
+            <button class="operator" onclick="press('/')">/</button>
+            <button onclick="press('(')">(</button>
+
+            <button onclick="press('4')">4</button>
+            <button onclick="press('5')">5</button>
+            <button onclick="press('6')">6</button>
+            <button class="operator" onclick="press('*')">*</button>
+            <button onclick="press(')')">)</button>
+
+            <button onclick="press('1')">1</button>
+            <button onclick="press('2')">2</button>
+            <button onclick="press('3')">3</button>
+            <button class="operator" onclick="press('-')">-</button>
+            <button onclick="press('.')">.</button>
+
+            <button onclick="press('0')">0</button>
+            <button class="equal" onclick="calculate()">=</button>
+            <button class="operator" onclick="press('+')">+</button>
+            <button style="grid-column: span 2;" onclick="toFractionUnicode()">Frac</button>
+        </div>
+    </div>
+
+    <!-- Converter -->
+    <div id="conv" class="panel">
+        <input type="number" id="convInput" placeholder="Enter value">
+
+        <div class="buttons">
+
+            <!-- Length -->
+            <button onclick="convert('km-m')">km→m</button>
+            <button onclick="convert('m-km')">m→km</button>
+            <button onclick="convert('m-cm')">m→cm</button>
+            <button onclick="convert('cm-m')">cm→m</button>
+            <button onclick="convert('cm-mm')">cm→mm</button>
+
+            <button onclick="convert('mm-cm')">mm→cm</button>
+            <button onclick="convert('dm-cm')">dm→cm</button>
+            <button onclick="convert('cm-dm')">cm→dm</button>
+
+            <!-- Area -->
+            <button onclick="convert('m2-cm2')">m²→cm²</button>
+            <button onclick="convert('cm2-m2')">cm²→m²</button>
+
+            <!-- Volume -->
+            <button onclick="convert('cm3-ml')">cm³→mL</button>
+            <button onclick="convert('ml-cm3')">mL→cm³</button>
+            <button onclick="convert('l-ml')">L→mL</button>
+            <button onclick="convert('ml-l')">mL→L</button>
+            <button onclick="convert('dm3-cm3')">dm³→cm³</button>
+
+            <button onclick="convert('cm3-dm3')">cm³→dm³</button>
+
+            <!-- Mass -->
+            <button onclick="convert('kg-g')">kg→g</button>
+            <button onclick="convert('g-kg')">g→kg</button>
+
+            <!-- Temperature -->
+            <button onclick="convert('c-f')">°C→°F</button>
+            <button onclick="convert('f-c')">°F→°C</button>
+
+            <!-- Time -->
+            <button onclick="convert('hr-min')">hr→min</button>
+            <button onclick="convert('min-hr')">min→hr</button>
+            <button onclick="convert('min-sec')">min→sec</button>
+            <button onclick="convert('sec-min')">sec→min</button>
+
+        </div>
+
+        <input type="text" id="convResult" readonly placeholder="Result">
+    </div>
+
 </div>
 
 <script>
+// Toggle screens
+function showCalc() {
+    document.getElementById('calc').classList.add('active');
+    document.getElementById('conv').classList.remove('active');
+}
+function showConv() {
+    document.getElementById('conv').classList.add('active');
+    document.getElementById('calc').classList.remove('active');
+}
+
+// Calculator
 let display = document.getElementById('display');
 
-function press(value) {
-    display.value += value;
+function press(v){ display.value += v; }
+function clearDisplay(){ display.value=''; }
+function deleteLast(){ display.value = display.value.slice(0,-1); }
+function pressPi(){ display.value += Math.PI; }
+
+function squareRoot(){
+    try { display.value = Math.sqrt(eval(display.value)); }
+    catch { display.value="Error"; }
+}
+function square(){
+    try { let v=eval(display.value); display.value = v*v; }
+    catch { display.value="Error"; }
+}
+function calculate(){
+    try { display.value = Function('"use strict";return ('+display.value+')')(); }
+    catch { display.value="Error"; }
 }
 
-function clearDisplay() {
-    display.value = '';
+// Fractions
+function decimalToFraction(value){
+    let t=1e-6,h1=1,h2=0,k1=0,k2=1,b=value;
+    do{
+        let a=Math.floor(b);
+        [h1,h2]=[a*h1+h2,h1];
+        [k1,k2]=[a*k1+k2,k1];
+        b=1/(b-a);
+    }while(Math.abs(value-h1/k1)>value*t);
+    return h1+"/"+k1;
 }
 
-function deleteLast() {
-    display.value = display.value.slice(0, -1);
+function convertToUnicodeFraction(str){
+    const m={"1/2":"½","1/3":"⅓","2/3":"⅔","1/4":"¼","3/4":"¾","1/5":"⅕","2/5":"⅖","3/5":"⅗","4/5":"⅘","1/6":"⅙","5/6":"⅚","1/8":"⅛","3/8":"⅜","5/8":"⅝","7/8":"⅞"};
+    return m[str]||str;
 }
 
-// Math functions
-function pressPi() {
-    display.value += Math.PI;
+function toFractionUnicode(){
+    let v=parseFloat(display.value);
+    if(isNaN(v)){display.value="Error";return;}
+    display.value = convertToUnicodeFraction(decimalToFraction(v));
 }
 
-function squareRoot() {
-    try {
-        display.value = Math.sqrt(eval(display.value));
-    } catch {
-        display.value = "Error";
+// Conversions
+function convert(type){
+    let input=parseFloat(document.getElementById('convInput').value);
+    let result=document.getElementById('convResult');
+    if(isNaN(input)){result.value="Error";return;}
+
+    switch(type){
+        case 'km-m': result.value=input*1000; break;
+        case 'm-km': result.value=input/1000; break;
+        case 'm-cm': result.value=input*100; break;
+        case 'cm-m': result.value=input/100; break;
+        case 'cm-mm': result.value=input*10; break;
+        case 'mm-cm': result.value=input/10; break;
+        case 'dm-cm': result.value=input*10; break;
+        case 'cm-dm': result.value=input/10; break;
+
+        case 'm2-cm2': result.value=input*10000; break;
+        case 'cm2-m2': result.value=input/10000; break;
+
+        case 'cm3-ml': result.value=input; break;
+        case 'ml-cm3': result.value=input; break;
+        case 'l-ml': result.value=input*1000; break;
+        case 'ml-l': result.value=input/1000; break;
+        case 'dm3-cm3': result.value=input*1000; break;
+        case 'cm3-dm3': result.value=input/1000; break;
+
+        case 'kg-g': result.value=input*1000; break;
+        case 'g-kg': result.value=input/1000; break;
+
+        case 'c-f': result.value=(input*9/5)+32; break;
+        case 'f-c': result.value=(input-32)*5/9; break;
+
+        case 'hr-min': result.value=input*60; break;
+        case 'min-hr': result.value=input/60; break;
+        case 'min-sec': result.value=input*60; break;
+        case 'sec-min': result.value=input/60; break;
+
+        default: result.value="Unknown";
     }
-}
-
-function square() {
-    try {
-        let val = eval(display.value);
-        display.value = val * val;
-    } catch {
-        display.value = "Error";
-    }
-}
-
-function calculate() {
-    try {
-        display.value = Function('"use strict";return (' + display.value + ')')();
-    } catch {
-        display.value = "Error";
-    }
-}
-
-// Fraction logic
-function decimalToFraction(value) {
-    let tolerance = 1.0E-6;
-    let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
-    let b = value;
-
-    do {
-        let a = Math.floor(b);
-        let aux = h1;
-        h1 = a * h1 + h2;
-        h2 = aux;
-        aux = k1;
-        k1 = a * k1 + k2;
-        k2 = aux;
-        b = 1 / (b - a);
-    } while (Math.abs(value - h1 / k1) > value * tolerance);
-
-    return h1 + "/" + k1;
-}
-
-function convertToUnicodeFraction(str) {
-    const map = {
-        "1/2": "½",
-        "1/3": "⅓",
-        "2/3": "⅔",
-        "1/4": "¼",
-        "3/4": "¾",
-        "1/5": "⅕",
-        "2/5": "⅖",
-        "3/5": "⅗",
-        "4/5": "⅘",
-        "1/6": "⅙",
-        "5/6": "⅚",
-        "1/8": "⅛",
-        "3/8": "⅜",
-        "5/8": "⅝",
-        "7/8": "⅞"
-    };
-    return map[str] || str;
-}
-
-function toFractionUnicode() {
-    let value = parseFloat(display.value);
-
-    if (isNaN(value)) {
-        display.value = "Error";
-        return;
-    }
-
-    let fraction = decimalToFraction(value);
-    display.value = convertToUnicodeFraction(fraction);
 }
 </script>
 
